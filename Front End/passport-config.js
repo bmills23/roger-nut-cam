@@ -1,5 +1,7 @@
 const LocalStrategy = require('passport-local').Strategy
 
+const mysql = require('mysql')
+
 const bcrypt = require('bcrypt')
 
 function initialize(passport, getUserByEmail, getUserById) {

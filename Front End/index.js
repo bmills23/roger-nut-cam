@@ -140,12 +140,12 @@ app.post('/register', checkNotAuthenticated, async (req, res) => { //bcrypt is a
     db.getConnection( async (err, connection) => {
       if (err) throw (err)
       const sqlSearch = "SELECT * FROM users WHERE fName = ?"
-      const search_query = mysql.format(sqlSearch, [fName])
-      const sqlInsert = "INSERT INTO userTable VALUES (0,?,?,?,?,?)"
-      const insert_query = mysql.format(sqlInsert,[id, fName, lName, email, password])
+      const searchQuery = mysql.format(sqlSearch, [fName])
+      const sqlInsert = "INSERT INTO users VALUES (?,?,?,?,?)"
+      const insertQuery = mysql.format(sqlInsert,[id, fName, lName, email, password])
       // ? will be replaced by values
       // ?? will be replaced by string
-      await connection.query (search_query, async (err, result) => {
+      await connection.query (searchQuery, async (err, result) => {
        if (err) throw (err)
        console.log("------> Search Results")
        console.log(result.length)
@@ -154,7 +154,7 @@ app.post('/register', checkNotAuthenticated, async (req, res) => { //bcrypt is a
         console.log("------> User already exists")
        } 
        else {
-        await connection.query (insert_query, (err, result)=> {
+        await connection.query (insertQuery, (err, result)=> {
         connection.release()
         if (err) throw (err)
         console.log ("--------> Created new User")
