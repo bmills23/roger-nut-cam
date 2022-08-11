@@ -42,36 +42,44 @@ db.getConnection( (err, connection) => {
 const initializePassport = require('./passport-config')
 
 initializePassport(
-  passport, 
-  email => db.getConnection( async (err, connection) => {
-    if (err) throw (err)
-    const sqlSearch = "SELECT * FROM users WHERE email = ?"
-    const searchQuery = mysql.format(sqlSearch, [email])
-  
-    await connection.query(searchQuery, async (err, result) => {
-      connection.release()
-      
-      if (err) throw (err)
-      console.log(result[0].email)
-      return result[0].email
-    })
-  }),
-  id => db.getConnection( async (err, connection) => {
-    if (err) throw (err)
-    const sqlSearch = "SELECT * FROM users WHERE id = ?"
-    const searchQuery = mysql.format(sqlSearch, [id])
-  
-    await connection.query(searchQuery, async (err, result) => {
-      connection.release()
+  passport,
+  (email) =>
+    db.getConnection(async (err, connection) => {
+      if (err) throw err;
+      const sqlSearch = "SELECT * FROM users WHERE email = ?";
+      const searchQuery = mysql.format(sqlSearch, [email]);
 
-      if (err) throw (err)
-      console.log(result[0].id)
-      return result[0].id
+      // return out of db.getConnection()
+      return connection.query(searchQuery, async (err, result) => {
+        connection.release();
+
+        if (err) throw err;
+        console.log(result[0].email);
+        // return out of connection.query()
+        return result[0].email;
+      });
+    }),
+  (id) =>
+    db.getConnection(async (err, connection) => {
+      if (err) throw err;
+      const sqlSearch = "SELECT * FROM users WHERE id = ?";
+      const searchQuery = mysql.format(sqlSearch, [id]);
+
+      // return out of db.getConnection()
+      return connection.query(searchQuery, async (err, result) => {
+        connection.release();
+
+        if (err) throw err;
+        console.log(result[0].id);
+        // return out of connection.query()
+        return result[0].id;
+      });
     })
-  })
+);
+
   // email => users.find(user => user.email === email), //method for local dev authentication
   // id => users.find(user => user.id === id)
-)
+
 
 // const users = [] //local var for dev ONLY; will need to redirect registration to database
 
