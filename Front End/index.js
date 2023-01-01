@@ -40,42 +40,39 @@ db.getConnection( (err, connection) => {
 
 //Passport & Passport Config
 const initializePassport = require('./passport-config')
-
 initializePassport(
   passport,
-  (email) =>
-    db.getConnection(async (err, connection) => {
-      if (err) throw err;
-      const sqlSearch = "SELECT * FROM users WHERE email = ?";
-      const searchQuery = mysql.format(sqlSearch, [email]);
-
-      // return out of db.getConnection()
-      return connection.query(searchQuery, async (err, result) => {
-        connection.release();
-
-        if (err) throw err;
-        console.log(result[0].email);
-        // return out of connection.query()
-        return result[0].email;
-      });
-    }),
-  (id) =>
-    db.getConnection(async (err, connection) => {
-      if (err) throw err;
-      const sqlSearch = "SELECT * FROM users WHERE id = ?";
-      const searchQuery = mysql.format(sqlSearch, [id]);
-
-      // return out of db.getConnection()
-      return connection.query(searchQuery, async (err, result) => {
-        connection.release();
-
-        if (err) throw err;
-        console.log(result[0].id);
-        // return out of connection.query()
-        return result[0].id;
-      });
+  email => {
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) return reject(err)
+        const q = "SELECT * FROM users WHERE email = ?"
+        const query = mysql.format(q, [email])
+        return connection.query(query, (err, results) => {
+          connection.release()
+          if (err) return reject(err)
+          console.log(results[0])
+          return resolve(results[0])
+        })
+      })
     })
-);
+  },
+  id => {
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) return reject(err)
+        const q = "SELECT * FROM users WHERE id = ?"
+        const query = mysql.format(q, [id])
+        return connection.query(query, (err, results) => {
+          connection.release()
+          if (err) return reject(err)
+          console.log(results[0])
+          return resolve(results[0])
+        })
+      })
+    })
+  }
+)
 
   // email => users.find(user => user.email === email), //method for local dev authentication
   // id => users.find(user => user.id === id)
