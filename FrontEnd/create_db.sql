@@ -1,0 +1,8 @@
+CREATE SCHEMA IF NOT EXISTS `nut_cam_db`;
+CREATE TABLE IF NOT EXISTS `nut_cam_db`.`users` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `fName` VARCHAR(255) NOT NULL,
+  `lName` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`));

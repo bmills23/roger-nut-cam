@@ -31,6 +31,7 @@ const db = mysql.createPool({
   password: DB_PASSWORD,
   database: DB_DATABASE,
   port: DB_PORT
+  //socketPath:"/var/run/mysqld/mysqld.sock"
 })
 
 db.getConnection( (err, connection) => {
@@ -109,11 +110,12 @@ app.use(methodOverride('_method'))
 
 //Get Rendering
 app.get('/', checkAuthenticated, (req, res) => {
+
     res.render('home', { name : req.user.fName })
 })
 
 app.get('/login', checkNotAuthenticated,  (req, res) => {
-    res.render('login')
+      res.render('login')
 })
 
 app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
@@ -144,6 +146,7 @@ app.post('/register', checkNotAuthenticated, async (req, res) => { //bcrypt is a
 
     db.getConnection( async (err, connection) => {
       if (err) throw (err)
+
       const sqlSearch = "SELECT * FROM users WHERE fName = ?"
       const searchQuery = mysql.format(sqlSearch, [fName])
       const sqlInsert = "INSERT INTO users VALUES (?,?,?,?,?)"
